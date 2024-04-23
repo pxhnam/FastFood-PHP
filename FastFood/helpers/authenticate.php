@@ -8,4 +8,11 @@ class Authenticate
             exit;
         }
     }
+    public static function RequiredLogin()
+    {
+        if (!isset($_SESSION['User'])) {
+            header('Location: /Login');
+            exit;
+        }
+    }
 }

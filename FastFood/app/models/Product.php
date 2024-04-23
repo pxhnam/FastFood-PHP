@@ -4,51 +4,42 @@ class Product
     private $conn;
     private $table = "Products";
 
-    public function __construct($db)
+    function __construct($db)
     {
         $this->conn = $db;
     }
 
-    function getProducts($search)
+    function get($search, $offset, $limit)
     {
-        // Viết truy vấn SQL để lấy danh sách người dùng từ cơ sở dữ liệu
-        $query = 'SELECT p.*, c.name AS category_name FROM ' . $this->table . ' p INNER JOIN categories c ON p.category_id = c.id WHERE p.is_delete = false AND p.name LIKE :search';
-        //
-        $searchTerm = '%' . $search . '%';
+        $query = "SELECT p.*, c.name AS category_name FROM $this->table p INNER JOIN categories c ON p.category_id = c.id WHERE p.is_delete = false AND p.name LIKE :search LIMIT :offset, :limit";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':search', $searchTerm);
+        $stmt->bindValue(':search', '%' . $search . '%');
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function getProductById($id)
+    function getById($id)
     {
-        $query = 'SELECT p.*, c.name AS category_name FROM ' . $this->table . ' p INNER JOIN categories c ON p.category_id = c.id' . ' WHERE p.id = :id AND p.is_delete = false';
+        $query = "SELECT p.*, c.name AS category_name FROM $this->table p INNER JOIN categories c ON p.category_id = c.id WHERE p.id = :id AND p.is_delete = false";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_OBJ);
     }
-    public function getTotal($id, $quantity)
+
+    function count($search)
     {
-        $query = 'SELECT price FROM ' . $this->table . ' WHERE id = :id';
+        $query = "SELECT COUNT(*) AS total FROM $this->table WHERE is_delete = false AND name LIKE :search";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
+        $stmt->bindValue(':search', '%' . $search . '%');
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_OBJ);
-        return $result->price * $quantity;
-    }
-    public function getPrice($id)
-    {
-        $query = 'SELECT price FROM ' . $this->table . ' WHERE id = :id';
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_OBJ);
-        return $result->price;
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
     }
 
-    public function create($name, $image, $description, $price, $category)
+    function create($name, $image, $description, $price, $category)
     {
         $errors = [];
         if (empty($name)) {
@@ -68,21 +59,18 @@ class Product
             return $errors;
         }
 
-        // Truy vấn tạo sản phẩm mới
-        $query = "INSERT INTO " . $this->table . " (name, image, description, price, category_id) VALUES (:name, :image, :description, :price, :category_id)";
+        $query = "INSERT INTO $this->table (name, image, description, price, category_id) VALUES (:name, :image, :description, :price, :category_id)";
         $stmt = $this->conn->prepare($query);
 
-        // Gán dữ liệu vào câu lệnh
         $stmt->bindValue(':name', htmlspecialchars(strip_tags($name)));
         $stmt->bindValue(':image', htmlspecialchars(strip_tags($image)));
         $stmt->bindValue(':description', htmlspecialchars(strip_tags($description)));
         $stmt->bindValue(':price', htmlspecialchars(strip_tags($price)));
         $stmt->bindValue(':category_id', htmlspecialchars(strip_tags($category)));
-        // Thực thi câu lệnh
         return $stmt->execute();
     }
 
-    public function update($id, $name, $image, $description, $price, $category)
+    function update($id, $name, $image, $description, $price, $category)
     {
         $errors = [];
         if (empty($name)) {
@@ -102,11 +90,9 @@ class Product
             return $errors;
         }
 
-        // Truy vấn cập nhật sản phẩm
-        $query = "UPDATE " . $this->table . " SET name = :name, image = :image, description = :description, price = :price, category_id = :category_id WHERE id = :id";
+        $query = "UPDATE $this->table SET name = :name, image = :image, description = :description, price = :price, category_id = :category_id WHERE id = :id";
         $stmt = $this->conn->prepare($query);
 
-        // Gán dữ liệu vào câu lệnh
         $stmt->bindParam(':id', $id);
         $stmt->bindValue(':name', htmlspecialchars(strip_tags($name)));
         $stmt->bindValue(':image', htmlspecialchars(strip_tags($image)));
@@ -114,12 +100,11 @@ class Product
         $stmt->bindValue(':price', htmlspecialchars(strip_tags($price)));
         $stmt->bindValue(':category_id', htmlspecialchars(strip_tags($category)));
 
-        // Thực thi câu lệnh
         return $stmt->execute();
     }
-    public function remove($id)
+    function remove($id)
     {
-        $query = 'UPDATE ' . $this->table . ' SET is_delete = true WHERE id = :id';
+        $query = "UPDATE $this->table SET is_delete = true WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
