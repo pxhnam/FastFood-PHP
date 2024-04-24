@@ -22,11 +22,13 @@
                     <?= isset($errors['name']) ? '<small class="form-text text-danger">' . $errors['name'] . '</small>' : '' ?>
                 </div>
                 <div class="mb-3">
-                    <label for="image" class="form-label">Image</label>
-                    <input class="form-control" type="file" id="image" name="image">
+                    <label for="image" class="form-label btn btn-outline-secondary">
+                        <i class="far fa-image"></i>
+                    </label>
+                    <input class="form-control d-none" type="file" id="image" name="image">
                     <?= isset($errors['image']) ? '<small class="form-text text-danger">' . $errors['image'] . '</small>' : '' ?>
                     <div id="imagePreview" class="mt-2">
-                        <img src="/uploads/<?= $product->image ?>" alt="" width="600px">
+                        <img src="/uploads/<?= $product->image ?>" alt="" width="600px" class="img-thumbnail">
                     </div>
                 </div>
                 <div class="form-floating mb-3">

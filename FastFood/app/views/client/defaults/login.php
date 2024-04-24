@@ -19,7 +19,7 @@
                 <form action="" method="POST" class="form-floating">
 
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="username" id="inputUsername" placeholder="" autofocus>
+                        <input type="text" class="form-control" name="username" id="inputUsername" placeholder="" value="<?= $username ?? '' ?>" autofocus>
                         <label for="inputUsername">Username</label>
                     </div>
                     <div class="form-floating mb-3">

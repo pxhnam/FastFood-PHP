@@ -18,7 +18,7 @@ class DefaultController
     {
         Authenticate::RequiredLogin();
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            include $this->path . 'password.php';
+            include_once $this->path . 'password.php';
         } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $old_password = $_POST['old_password'] ?? '';
             $new_password = $_POST['new_password'] ?? '';
@@ -27,13 +27,13 @@ class DefaultController
                 $result = $this->User->changePassword($old_password, $new_password, $confirm_password);
                 if (is_array($result)) {
                     $errors = $result;
-                    include $this->path . 'password.php';
+                    include_once $this->path . 'password.php';
                 } else {
                     $success = 'Thay đổi mật khẩu thành công.';
-                    include $this->path . 'password.php';
+                    include_once $this->path . 'password.php';
                 }
             } catch (\Throwable $th) {
-                include $this->path . 'password.php';
+                include_once $this->path . 'password.php';
                 exit;
             }
         }
@@ -42,7 +42,7 @@ class DefaultController
     {
         Authenticate::LoggedIn();
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            include $this->path . 'login.php';
+            include_once $this->path . 'login.php';
         } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
@@ -50,7 +50,7 @@ class DefaultController
             try {
                 $result = $this->User->login($username, $password);
             } catch (\Throwable $th) {
-                include $this->path . 'login.php';
+                include_once $this->path . 'login.php';
                 exit;
             }
             if (is_array($result)) {
@@ -62,7 +62,7 @@ class DefaultController
                 echo "<script>alert('Đăng Nhập Thành Công');location.href='/login'</script>";
             } else {
                 $error = 'Tên đăng nhập hoặc mật khẩu không đúng';
-                include $this->path . 'login.php';
+                include_once $this->path . 'login.php';
             }
         }
     }
@@ -70,7 +70,7 @@ class DefaultController
     {
         Authenticate::LoggedIn();
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            include $this->path . 'register.php';
+            include_once $this->path . 'register.php';
         } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $first_name = $_POST['first_name'] ?? '';
             $last_name = $_POST['last_name'] ?? '';
@@ -84,13 +84,13 @@ class DefaultController
             try {
                 $result = $this->User->register($first_name, $last_name, $username, $password, $day, $month, $year, $gender);
             } catch (\Throwable $th) {
-                include $this->path . 'register.php';
+                include_once $this->path . 'register.php';
                 exit;
             }
 
             if (is_array($result)) {
                 $errors = $result;
-                include $this->path . 'register.php';
+                include_once $this->path . 'register.php';
             } else echo "<script>alert('Đăng Ký Thành Công');location.href='/login'</script>";
         }
     }

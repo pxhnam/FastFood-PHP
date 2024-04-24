@@ -20,18 +20,18 @@
                 <form action="" method="POST">
                     <div class="d-flex justify-content-between mb-3">
                         <div class="form-floating flex-fill me-1">
-                            <input type="text" class="form-control<?= isset($errors['first_name']) ? ' is-invalid' : '' ?>" name="first_name" id="first_name" placeholder="" autofocus>
+                            <input type="text" class="form-control<?= isset($errors['first_name']) ? ' is-invalid' : '' ?>" name="first_name" id="first_name" placeholder="" value="<?= $first_name ?? '' ?>" autofocus>
                             <label for="first_name">Firt name</label>
                             <?= isset($errors['first_name']) ? '<small class="form-text text-danger">' . $errors['first_name'] . '</small>' : '' ?>
                         </div>
                         <div class="form-floating flex-fill ms-1">
-                            <input type="text" class="form-control<?= isset($errors['last_name']) ? ' is-invalid' : '' ?>" name="last_name" id="last_name" placeholder="">
+                            <input type="text" class="form-control<?= isset($errors['last_name']) ? ' is-invalid' : '' ?>" name="last_name" id="last_name" placeholder="" value="<?= $last_name ?? '' ?>">
                             <label for="last_name">Last name</label>
                             <?= isset($errors['last_name']) ? '<small class="form-text text-danger">' . $errors['last_name'] . '</small>' : '' ?>
                         </div>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control<?= isset($errors['username']) ? ' is-invalid' : '' ?>" name="username" id="inputUsername" placeholder="">
+                        <input type="text" class="form-control<?= isset($errors['username']) ? ' is-invalid' : '' ?>" name="username" id="inputUsername" placeholder="" value="<?= $username ?? '' ?>">
                         <label for="inputUsername">Username</label>
                         <?= isset($errors['username']) ? '<small class="form-text text-danger">' . $errors['username'] . '</small>' : '' ?>
                     </div>
@@ -83,9 +83,7 @@
     <script>
         $(document).ready(function() {
             makeDate();
-
             getSex();
-
         });
         $(document).on('input', 'input', function() {
             $(this).siblings('.text-danger').empty();

@@ -45,6 +45,9 @@ class Product
         if (empty($name)) {
             $errors['name'] = 'Product name cannot be empty';
         }
+        if (empty($image)) {
+            $errors['image'] = 'Product image cannot be empty';
+        }
         if (empty($description)) {
             $errors['description'] = 'Description cannot be empty';
         }

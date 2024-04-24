@@ -39,16 +39,16 @@ if (isset($url[1]) && $url[1] === 'admin') {
     $controllerName = isset($url[1]) && $url[1] !== '' ? ucfirst($url[1]) . 'Controller' : 'APIController';
     $action = isset($url[2]) && $url[2] !== '' ? $url[2] : 'index';
     if (!file_exists('app/controllers/api/' . $controllerName . '.php')) {
-        die();
+        die('Not found controller');
     }
 
     require_once 'app/controllers/api/' . $controllerName . '.php';
     $controller = new $controllerName();
 
     if (!method_exists($controller, $action)) {
-        die();
+        die('Not found action');
     }
-    call_user_func_array([$controller, $action], array_slice($url, 3));
+    $controller->$action();
 } else {
     #Client
     $controllerName = isset($url[1]) && $url[1] !== '' ? ucfirst($url[1]) . 'Controller' : 'DefaultController';

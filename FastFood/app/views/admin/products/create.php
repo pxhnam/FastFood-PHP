@@ -16,18 +16,23 @@
             <h3 class="text-center mb-3">CREATE PRODUCT</h3>
             <form action="" method="POST" enctype="multipart/form-data" class="form-floating">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control<?= isset($errors['name']) ? ' is-invalid' : '' ?>" id="name" name="name" placeholder="">
+                    <input type="text" class="form-control<?= isset($errors['name']) ? ' is-invalid' : '' ?>" id="name" name="name" placeholder="" value="<?= $name ?? '' ?>">
                     <label for="name">Name</label>
                     <?= isset($errors['name']) ? '<small class="form-text text-danger">' . $errors['name'] . '</small>' : '' ?>
                 </div>
                 <div class="mb-3">
-                    <label for="image" class="form-label">Image</label>
-                    <input class="form-control" type="file" id="image" name="image">
+                    <label for="image" class="form-label btn btn-outline-secondary">
+                        <i class="far fa-image"></i>
+                    </label>
+                    <input class="form-control d-none" type="file" id="image" name="image" accept="image/*">
                     <?= isset($errors['image']) ? '<small class="form-text text-danger">' . $errors['image'] . '</small>' : '' ?>
-                    <div id="imagePreview" class="mt-2"></div>
+                    <div id="imagePreview" class="mt-2">
+                        <?= !empty($image) ? "<img src='/uploads/$image' alt='' width='600px' class='img-thumbnail'>" : '' ?>
+                    </div>
+                    <input type="hidden" value="<?= $image ?? '' ?>" name='pic'>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="number" class="form-control<?= isset($errors['price']) ? ' is-invalid' : '' ?>" id="price" name="price" placeholder="">
+                    <input type="number" class="form-control<?= isset($errors['price']) ? ' is-invalid' : '' ?>" id="price" name="price" placeholder="" value="<?= $price ?? '' ?>">
                     <label for="price">Price</label>
                     <?= isset($errors['price']) ? '<small class="form-text text-danger">' . $errors['price'] . '</small>' : '' ?>
                 </div>
@@ -36,7 +41,8 @@
                         <option selected>--- Choose Category ---</option>
                         <?php
                         foreach ($categories as $row) {
-                            echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
+                            $selected = isset($category) && $category == $row['id'] ? 'selected' : '';
+                            echo "<option $selected value='" . $row['id'] . "'>" . $row['name'] . "</option>";
                         }
                         ?>
                     </select>
@@ -44,7 +50,7 @@
                     <?= isset($errors['category']) ? '<small class="form-text text-danger">' . $errors['category'] . '</small>' : '' ?>
                 </div>
                 <div class="form-floating mb-3">
-                    <textarea class="form-control<?= isset($errors['description']) ? ' is-invalid' : '' ?>" placeholder="" id="description" name="description" style="height: 100px"></textarea>
+                    <textarea class="form-control<?= isset($errors['description']) ? ' is-invalid' : '' ?>" placeholder="" id="description" name="description" style="height: 100px"><?= $description ?? '' ?></textarea>
                     <label for="description">Description</label>
                     <?= isset($errors['description']) ? '<small class="form-text text-danger">' . $errors['description'] . '</small>' : '' ?>
                 </div>

@@ -20,28 +20,29 @@ class ProductController
     {
         $categories = $this->Category->getList();
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            include $this->path . 'create.php';
+            include_once $this->path . 'create.php';
         } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'] ?? '';
             $price = $_POST['price'] ?? '';
             $category = $_POST['category'] ?? '';
             $description = $_POST['description'] ?? '';
-
-            if (isset($_FILES["image"])) {
+            $image = $_POST['pic'] ?? '';
+            if (!$image) {
                 $image = Uploader::uploadImage($_FILES["image"]);
-                if ($image) {
-                    $result = $this->Product->create($name, $image, $description, $price, $category);
+            }
+            if ($image) {
+                $result = $this->Product->create($name, $image, $description, $price, $category);
 
-                    if (is_array($result)) {
-                        $errors = $result;
-                        include $this->path . 'create.php';
-                    } else {
-                        header('Location: /admin/product');
-                    }
+                if (is_array($result)) {
+                    $errors = $result;
+                    include_once $this->path . 'create.php';
                 } else {
-                    $errors['image'] = 'Error uploading file.';
-                    include $this->path . 'create.php';
+                    # header('Location: /admin/product');
+                    echo "<script>alert('Thêm Thành Công');location.href='/admin/product'</script>";
                 }
+            } else {
+                $errors['image'] = 'Error uploading file.';
+                include_once $this->path . 'create.php';
             }
         }
     }
@@ -52,7 +53,7 @@ class ProductController
             if ($product) {
                 $categories = $this->Category->getList();
                 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-                    include $this->path . 'update.php';
+                    include_once $this->path . 'update.php';
                 } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $name = $_POST['name'] ?? '';
                     $price = $_POST['price'] ?? '';
@@ -68,9 +69,10 @@ class ProductController
 
                         if (is_array($result)) {
                             $errors = $result;
-                            include $this->path . 'update.php';
+                            include_once $this->path . 'update.php';
                         } else {
-                            header('Location: /admin/product');
+                            #header('Location: /admin/product');
+                            echo "<script>alert('Sửa Thành Công');location.href='/admin/product'</script>";
                         }
                     }
                 }
