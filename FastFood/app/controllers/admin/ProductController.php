@@ -27,11 +27,11 @@ class ProductController
             $category = $_POST['category'] ?? '';
             $description = $_POST['description'] ?? '';
             $image = $_POST['pic'] ?? '';
-            if (!$image) {
+            if (!empty($_FILES["image"]["name"])) {
                 $image = Uploader::uploadImage($_FILES["image"]);
             }
             if ($image) {
-                $result = $this->Product->create($name, $image, $description, $price, $category);
+                $result = $this->Product->update($name, $image, $description, $price, $category);
 
                 if (is_array($result)) {
                     $errors = $result;
@@ -48,36 +48,33 @@ class ProductController
     }
     public function Update($id)
     {
-        try {
-            $product = $this->Product->getById($id);
-            if ($product) {
-                $categories = $this->Category->getList();
-                if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-                    include_once $this->path . 'update.php';
-                } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    $name = $_POST['name'] ?? '';
-                    $price = $_POST['price'] ?? '';
-                    $category = $_POST['category'] ?? '';
-                    $description = $_POST['description'] ?? '';
+        $product = $this->Product->getById($id);
+        if ($product) {
+            $categories = $this->Category->getList();
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                include_once $this->path . 'update.php';
+            } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $name = $_POST['name'] ?? '';
+                $price = $_POST['price'] ?? '';
+                $category = $_POST['category'] ?? '';
+                $description = $_POST['description'] ?? '';
 
-                    if (isset($_FILES["image"])) {
-                        $image = Uploader::uploadImage($_FILES["image"]);
-                        if (!$image) {
-                            $image = $product->image;
-                        }
-                        $result = $this->Product->update($id, $name, $image, $description, $price, $category);
+                if (isset($_FILES["image"])) {
+                    $image = Uploader::uploadImage($_FILES["image"]);
+                    if (!$image) {
+                        $image = $product->image;
+                    }
+                    $result = $this->Product->update($name, $image, $description, $price, $category, $id);
 
-                        if (is_array($result)) {
-                            $errors = $result;
-                            include_once $this->path . 'update.php';
-                        } else {
-                            #header('Location: /admin/product');
-                            echo "<script>alert('Sửa Thành Công');location.href='/admin/product'</script>";
-                        }
+                    if (is_array($result)) {
+                        $errors = $result;
+                        include_once $this->path . 'update.php';
+                    } else {
+                        #header('Location: /admin/product');
+                        echo "<script>alert('Sửa Thành Công');location.href='/admin/product'</script>";
                     }
                 }
-            } else  header('Location: /admin/error');
-        } catch (\Throwable $th) {
-        }
+            }
+        } else  header('Location: /admin/error');
     }
 }

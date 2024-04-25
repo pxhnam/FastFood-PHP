@@ -1,4 +1,5 @@
 <?php $dir = 'app/views/client/layouts/' ?>
+
 <!DOCTYPE html>
 <html lang="en">
 

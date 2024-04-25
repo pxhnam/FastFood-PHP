@@ -11,28 +11,37 @@ class User
 
     function getUsers()
     {
-        $query = 'SELECT * FROM ' . $this->table;
-        $stmt = $this->conn->query($query);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $query = 'SELECT * FROM ' . $this->table;
+            $stmt = $this->conn->query($query);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $ex) {
+        }
     }
 
     public function getUsername($username)
     {
-        $query = "SELECT * FROM $this->table WHERE username = :username";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindValue(':username', htmlspecialchars(strip_tags($username)));
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $user;
+        try {
+            $query = "SELECT * FROM $this->table WHERE username = :username";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindValue(':username', htmlspecialchars(strip_tags($username)));
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $user;
+        } catch (PDOException $ex) {
+        }
     }
     public function getById($id)
     {
-        $query = "SELECT * FROM $this->table WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindValue(':id', htmlspecialchars(strip_tags($id)));
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $user;
+        try {
+            $query = "SELECT * FROM $this->table WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindValue(':id', htmlspecialchars(strip_tags($id)));
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $user;
+        } catch (PDOException $ex) {
+        }
     }
 
     function register($first_name, $last_name, $username, $password, $day, $month, $year, $gender)
@@ -74,23 +83,26 @@ class User
         if (count($errors) > 0) {
             return $errors;
         }
+        try {
 
-        $query = "INSERT INTO $this->table (username, password, first_name, last_name, sex, day, month, year) VALUES (:username, :password, :first_name, :last_name, :sex, :day, :month, :year)";
-        $stmt = $this->conn->prepare($query);
+            $query = "INSERT INTO $this->table (username, password, first_name, last_name, sex, day, month, year) VALUES (:username, :password, :first_name, :last_name, :sex, :day, :month, :year)";
+            $stmt = $this->conn->prepare($query);
 
-        $stmt->bindValue(':username', htmlspecialchars(strip_tags($username)));
-        $stmt->bindValue(
-            ':password',
-            htmlspecialchars(strip_tags(password_hash($password, PASSWORD_DEFAULT)))
-        );
-        $stmt->bindValue(':first_name', htmlspecialchars(strip_tags($first_name)));
-        $stmt->bindValue(':last_name', htmlspecialchars(strip_tags($last_name)));
-        $stmt->bindValue(':sex', htmlspecialchars(strip_tags($gender)));
-        $stmt->bindValue(':day', htmlspecialchars(strip_tags($day)));
-        $stmt->bindValue(':month', htmlspecialchars(strip_tags($month)));
-        $stmt->bindValue(':year', htmlspecialchars(strip_tags($year)));
+            $stmt->bindValue(':username', htmlspecialchars(strip_tags($username)));
+            $stmt->bindValue(
+                ':password',
+                htmlspecialchars(strip_tags(password_hash($password, PASSWORD_DEFAULT)))
+            );
+            $stmt->bindValue(':first_name', htmlspecialchars(strip_tags($first_name)));
+            $stmt->bindValue(':last_name', htmlspecialchars(strip_tags($last_name)));
+            $stmt->bindValue(':sex', htmlspecialchars(strip_tags($gender)));
+            $stmt->bindValue(':day', htmlspecialchars(strip_tags($day)));
+            $stmt->bindValue(':month', htmlspecialchars(strip_tags($month)));
+            $stmt->bindValue(':year', htmlspecialchars(strip_tags($year)));
 
-        return $stmt->execute();
+            return $stmt->execute();
+        } catch (PDOException $ex) {
+        }
     }
 
     function login($username, $password)
@@ -98,27 +110,34 @@ class User
         if (empty($username)) return false;
         if (empty($password)) return false;
 
-        $query = "SELECT * FROM $this->table WHERE username = :username";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':username', $username);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
 
-        if (!$user) return false;
-        if (!password_verify($password, $user['password'])) return false;
+            $query = "SELECT * FROM $this->table WHERE username = :username";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':username', $username);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $user;
+            if (!$user) return false;
+            if (!password_verify($password, $user['password'])) return false;
+
+            return $user;
+        } catch (PDOException $ex) {
+        }
     }
     public function getSexEnumValues()
     {
-        $query = "SHOW COLUMNS FROM $this->table WHERE Field = 'sex'";
-        $stmt = $this->conn->query($query);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
+            $query = "SHOW COLUMNS FROM $this->table WHERE Field = 'sex'";
+            $stmt = $this->conn->query($query);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        preg_match_all("/'(.*?)'/", $row['Type'], $matches);
-        $enum_values = $matches[1];
+            preg_match_all("/'(.*?)'/", $row['Type'], $matches);
+            $enum_values = $matches[1];
 
-        return $enum_values;
+            return $enum_values;
+        } catch (PDOException $ex) {
+        }
     }
     public function changePassword($old_password, $new_password, $confirm_password)
     {
@@ -151,10 +170,13 @@ class User
 
         $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
-        $query = "UPDATE $this->table SET password = :password WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindValue(':password', $hashed_password);
-        $stmt->bindValue(':id', $id);
-        return $stmt->execute();
+        try {
+            $query = "UPDATE $this->table SET password = :password WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindValue(':password', $hashed_password);
+            $stmt->bindValue(':id', $id);
+            return $stmt->execute();
+        } catch (PDOException $ex) {
+        }
     }
 }

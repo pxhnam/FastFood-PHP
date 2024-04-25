@@ -4,7 +4,6 @@ class CategoryController
 
     public function __construct()
     {
-        Authorize::isAdmin();
     }
     public function Index()
     {

@@ -47,12 +47,8 @@ class DefaultController
             $username = $_POST['username'] ?? '';
             $password = $_POST['password'] ?? '';
 
-            try {
-                $result = $this->User->login($username, $password);
-            } catch (\Throwable $th) {
-                include_once $this->path . 'login.php';
-                exit;
-            }
+            $result = $this->User->login($username, $password);
+
             if (is_array($result)) {
                 $_SESSION['User'] = array(
                     'id' => $result['id'],
@@ -81,12 +77,7 @@ class DefaultController
             $year = $_POST['year'] ?? '';
             $gender = $_POST['gender'] ?? '';
 
-            try {
-                $result = $this->User->register($first_name, $last_name, $username, $password, $day, $month, $year, $gender);
-            } catch (\Throwable $th) {
-                include_once $this->path . 'register.php';
-                exit;
-            }
+            $result = $this->User->register($first_name, $last_name, $username, $password, $day, $month, $year, $gender);
 
             if (is_array($result)) {
                 $errors = $result;

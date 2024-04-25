@@ -7,6 +7,10 @@ foreach (glob("app/models/*.php") as $filename) {
 foreach (glob("helpers/*.php") as $filename) {
     require_once $filename;
 }
+#const VIEWS_CLIENT = "app/views/client/";
+#const LAYOUTS_CLIENT = "app/views/client/layouts/";
+#const VIEWS_ADMIN = "app/views/admin/";
+#const LAYOUTS_ADMIN = "app/views/admin/layouts/";
 
 $url = $_SERVER['REQUEST_URI'] ?? '';
 $url = rtrim($url, '/');
